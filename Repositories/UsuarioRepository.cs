@@ -1,26 +1,31 @@
 using System.Data.SQLite;
 using EspacioTareas;
 namespace EspacioRepositorios
-{    
+{
     public class UsuarioRepository : IUsuarioRepository
     {
-        private string cadenaConexion = "Data Source=DB/kanban.db;Cache=Shared";
-        public int CrearUsuario(Usuario user)
+        private readonly string cadenaConexion = "Data Source=DB/kanban.db;Cache=Shared";
+        public Usuario CrearUsuario(Usuario user)
         {
-            int filasAfectadas;
-            var query = $"INSERT INTO Usuario (nombre) VALUES (@user)";
+            var query = $"INSERT INTO Usuario (nombre) VALUES (@nombre)";
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
-
-                connection.Open();
-                var command = new SQLiteCommand(query, connection);
-
-                command.Parameters.Add(new SQLiteParameter("@name", user.Nombre));
-                filasAfectadas = command.ExecuteNonQuery();
-
-                connection.Close();
+                try{
+                    connection.Open();
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.Add(new SQLiteParameter("@nombre", user.Nombre));
+                        command.ExecuteNonQuery(); 
+                    }
+                }
+                catch (Exception ex){
+                    Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+                }  
+                finally{
+                    connection.Close();
+                }
             }
-            return filasAfectadas;
+            return user;
         }
         public List<Usuario> GetAll()
         {
@@ -28,62 +33,99 @@ namespace EspacioRepositorios
             string queryString = "SELECT id, nombre FROM kanban.Usuario;";
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
-                SQLiteCommand command = new SQLiteCommand(queryString, connection);
-                connection.Open();
-
-                using (SQLiteDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
+                try{
+                    connection.Open();
+                    using (SQLiteCommand command = new SQLiteCommand(queryString, connection))
                     {
-                        var usuario = new Usuario();
-                        usuario.Id = Convert.ToInt32(reader["id"]);
-                        usuario.Nombre = reader["nombre"].ToString();
-                        usuarios.Add(usuario);
+                        using (SQLiteDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var usuario = new Usuario();
+                                usuario.Id = Convert.ToInt32(reader["id"]);
+                                usuario.Nombre = reader["nombre"].ToString();
+                                usuarios.Add(usuario);
+                            }
+                        }
                     }
                 }
-                connection.Close();
+                catch (Exception ex){
+                    Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+                }  
+                finally{
+                    connection.Close();
+                }
             }
             return usuarios;
         }
-        public int ModificarUsuario(int id, Usuario user)
+        public Usuario ModificarUsuario(int id, Usuario user)
         {
-            SQLiteConnection connection = new SQLiteConnection(cadenaConexion);
-            SQLiteCommand command = connection.CreateCommand();
-            command.CommandText = $"UPDATE directors SET nombre = '{user.Nombre}' WHERE id = '{id}';";
-            connection.Open();
-            int filasAfectadas = command.ExecuteNonQuery();
-            connection.Close();
-            return filasAfectadas;
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            {
+                try{
+                    connection.Open();
+                    using SQLiteCommand command = connection.CreateCommand();
+                    command.CommandText = $"UPDATE Usuario SET nombre_usuario = @nombre WHERE id = @id;";
+                    command.Parameters.Add(new SQLiteParameter("id", id));
+                    command.Parameters.Add(new SQLiteParameter("nombre", user.Nombre));
+                    command.ExecuteNonQuery();   
+                } 
+                catch (Exception ex){
+                        Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+                }
+                finally{
+                        connection.Close();
+                }
+            }
+            return user;
         }
 
         public Usuario GetUsuarioById(int idUsuario)
         {
-            SQLiteConnection connection = new SQLiteConnection(cadenaConexion);
             var usuario = new Usuario();
-            SQLiteCommand command = connection.CreateCommand();
-            command.CommandText = "SELECT * FROM directors WHERE id = @idUsuario";
-            command.Parameters.Add(new SQLiteParameter("@idusuario", idUsuario));
-            connection.Open();
-            using (SQLiteDataReader reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    usuario.Id = Convert.ToInt32(reader["id"]);
-                    usuario.Nombre = reader["nombre"].ToString();
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion)){
+                try{
+                    connection.Open();
+                    using SQLiteCommand command = connection.CreateCommand();
+                    command.CommandText = "SELECT * FROM directors WHERE id = @idUsuario";
+                    command.Parameters.Add(new SQLiteParameter("@idusuario", idUsuario));
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            usuario.Id = Convert.ToInt32(reader["id"]);
+                            usuario.Nombre = reader["nombre"].ToString();
+                        }
+                    }
+                }
+                catch (Exception ex){
+                    Console.WriteLine($"Ha ocurrido un erro: {ex.Message}");
+                }   
+                finally{
+                    connection.Close();
                 }
             }
-            connection.Close();
-
             return usuario;
         }
         public int EliminarUsuario(int id)
         {
-            SQLiteConnection connection = new SQLiteConnection(cadenaConexion);
-            SQLiteCommand command = connection.CreateCommand();
-            command.CommandText = $"DELETE FROM directors WHERE id = '{id}';";
-            connection.Open();
-            int filasAfectadas = command.ExecuteNonQuery();
-            connection.Close();
+            int filasAfectadas = 0;
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion)){
+                try
+                {
+                    connection.Open();
+                    using SQLiteCommand command = connection.CreateCommand();
+                    command.CommandText = $"DELETE FROM directors WHERE id = @id;";
+                    command.Parameters.Add(new SQLiteParameter("id", id));
+                    filasAfectadas = command.ExecuteNonQuery();
+                }
+                catch (Exception ex){
+                    Console.WriteLine($"Ha ocurrido un error al acceder a la base de datos: {ex.Message}");
+                }  
+                finally{
+                    connection.Close();
+                } 
+            }
             return filasAfectadas;
         }
     }
