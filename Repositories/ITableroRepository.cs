@@ -11,7 +11,4 @@ namespace EspacioRepositorios
         List<Tablero >GetAllTablerosDeUsuario(int idUsuario);
         int EliminarTablero(int idTablero);
     }
-
-    /*CrearunrepositoriollamadoTableroRepositoryparagestionartodaslasoperaciones relacionadascontableros.Esterepositoriodebeincluirmétodospara: ● Crearunnuevotablero(devuelveunobjetoTablero) ●Modificaruntableroexistente(recibeunidyunobjetoTablero) ●ObtenerdetallesdeuntableroporsuID.(recibeunidydevuelveunTablero) ● Listartodoslostablerosexistentes(devuelveunlistdetableros) ● Listartodoslostablerosdeunusuarioespecífico.(recibeunIdUsuario,devuelveun listdetableros) ● EliminaruntableroporID*/
-    
 }

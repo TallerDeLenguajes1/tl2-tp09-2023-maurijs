@@ -7,7 +7,7 @@ namespace EspacioRepositorios
         private readonly string cadenaConexion = "Data Source=DB/kanban.db;Cache=Shared";
         public Usuario CrearUsuario(Usuario user)
         {
-            var query = $"INSERT INTO Usuario (nombre) VALUES (@nombre)";
+            var query = "INSERT INTO Usuario (nombre) VALUES (@nombre)";
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
                 try{
@@ -65,7 +65,7 @@ namespace EspacioRepositorios
                 try{
                     connection.Open();
                     using SQLiteCommand command = connection.CreateCommand();
-                    command.CommandText = $"UPDATE Usuario SET nombre_usuario = @nombre WHERE id = @id;";
+                    command.CommandText = "UPDATE Usuario SET nombre_usuario = @nombre WHERE id = @id;";
                     command.Parameters.Add(new SQLiteParameter("id", id));
                     command.Parameters.Add(new SQLiteParameter("nombre", user.Nombre));
                     command.ExecuteNonQuery();   
@@ -99,7 +99,7 @@ namespace EspacioRepositorios
                     }
                 }
                 catch (Exception ex){
-                    Console.WriteLine($"Ha ocurrido un erro: {ex.Message}");
+                    Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
                 }   
                 finally{
                     connection.Close();
@@ -115,7 +115,7 @@ namespace EspacioRepositorios
                 {
                     connection.Open();
                     using SQLiteCommand command = connection.CreateCommand();
-                    command.CommandText = $"DELETE FROM directors WHERE id = @id;";
+                    command.CommandText = "DELETE FROM directors WHERE id = @id;";
                     command.Parameters.Add(new SQLiteParameter("id", id));
                     filasAfectadas = command.ExecuteNonQuery();
                 }
