@@ -100,7 +100,7 @@ namespace EspacioRepositorios
                 connection.Open();
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT * FROM Tablero WHERE id_tablero = @idUsuario;";
+                    command.CommandText = "SELECT * FROM Tablero WHERE id_usuario_propietario = @idUsuario;";
                     command.Parameters.Add(new SQLiteParameter("idUsuario", idUsuario));
                     command.ExecuteNonQuery();
                     using (var reader = command.ExecuteReader())
