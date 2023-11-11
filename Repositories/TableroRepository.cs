@@ -5,7 +5,7 @@ namespace EspacioRepositorios
 {
     public class TableroRepository : ITableroRepository
     {
-        private readonly string cadenaConexion = "Data Source=DB/kanban.db;Cache=Shared";
+        private readonly string cadenaConexion = "Data Source=DB/kanban.sql;Cache=Shared";
 
         public Tablero CrearTablero(Tablero T)
         {
@@ -15,9 +15,9 @@ namespace EspacioRepositorios
                 connection.Open(); // va antes de crear el command
                 using SQLiteCommand command = connection.CreateCommand();
                 command.CommandText = "INSERT INTO Tablero (nombre, descripcion, id_usuario_propietario) VALUES (@nombre, @descripcion, @idUsuarioPropietario);";
-                command.Parameters.Add(new SQLiteParameter("nombre", T.Nombre));
-                command.Parameters.Add(new SQLiteParameter("descripcion", T.Descripcion));
-                command.Parameters.Add(new SQLiteParameter("idUsuarioPropietario", T.IdUsuarioPropietario));
+                command.Parameters.Add(new SQLiteParameter("@nombre", T.Nombre));
+                command.Parameters.Add(new SQLiteParameter("@descripcion", T.Descripcion));
+                command.Parameters.Add(new SQLiteParameter("@idUsuarioPropietario", T.IdUsuarioPropietario));
                 command.ExecuteNonQuery();
             }
             catch (Exception ex)
@@ -40,7 +40,7 @@ namespace EspacioRepositorios
                 connection.Open();
                 using var command = connection.CreateCommand();
                 command.CommandText = "DELETE FROM Tablero WHERE id_tablero = @idTablero;";
-                command.Parameters.Add(new SQLiteParameter("idTablero", idTablero));
+                command.Parameters.Add(new SQLiteParameter("@idTablero", idTablero));
                 filasAfectadas = command.ExecuteNonQuery();
             }
             catch (Exception ex)
@@ -101,7 +101,7 @@ namespace EspacioRepositorios
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT * FROM Tablero WHERE id_usuario_propietario = @idUsuario;";
-                    command.Parameters.Add(new SQLiteParameter("idUsuario", idUsuario));
+                    command.Parameters.Add(new SQLiteParameter("@idUsuario", idUsuario));
                     command.ExecuteNonQuery();
                     using (var reader = command.ExecuteReader())
                     {
@@ -141,7 +141,7 @@ namespace EspacioRepositorios
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT * FROM Tablero WHERE id_tablero = @idTablero;";
-                    command.Parameters.Add(new SQLiteParameter("idTablero", idTablero));
+                    command.Parameters.Add(new SQLiteParameter("@idTablero", idTablero));
                     command.ExecuteNonQuery();
                     using (var reader = command.ExecuteReader())
                     {
@@ -178,10 +178,10 @@ namespace EspacioRepositorios
                     using(var command = connection.CreateCommand())
                     {
                         command.CommandText = "UPDATE Tablero SET nombre = @nombre, descripcion = @descripcion, id_usuario_propietario = @idUsuarioPropietario WHERE id_tablero = @idTablero ";
-                        command.Parameters.Add(new SQLiteParameter("nombre",T.Nombre));
-                        command.Parameters.Add(new SQLiteParameter("descripcion",T.Descripcion));
-                        command.Parameters.Add(new SQLiteParameter("idUsuarioPropietario",T.IdUsuarioPropietario));
-                        command.Parameters.Add(new SQLiteParameter("idTablero",T.Id));
+                        command.Parameters.Add(new SQLiteParameter("@nombre",T.Nombre));
+                        command.Parameters.Add(new SQLiteParameter("@descripcion",T.Descripcion));
+                        command.Parameters.Add(new SQLiteParameter("@idUsuarioPropietario",T.IdUsuarioPropietario));
+                        command.Parameters.Add(new SQLiteParameter("@idTablero",T.Id));
                         command.ExecuteNonQuery();
                     }
                 }

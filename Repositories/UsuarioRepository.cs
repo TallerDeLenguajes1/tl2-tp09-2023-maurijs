@@ -4,7 +4,7 @@ namespace EspacioRepositorios
 {
     public class UsuarioRepository : IUsuarioRepository
     {
-        private readonly string cadenaConexion = "Data Source=DB/kanban.db;Cache=Shared";
+        private readonly string cadenaConexion = "Data Source=DB/kanban.sql;Cache=Shared";
         public Usuario CrearUsuario(Usuario user)
         {
             var query = "INSERT INTO Usuario (nombre) VALUES (@nombre)";
@@ -66,8 +66,8 @@ namespace EspacioRepositorios
                     connection.Open();
                     using SQLiteCommand command = connection.CreateCommand();
                     command.CommandText = "UPDATE Usuario SET nombre_usuario = @nombre WHERE id = @id;";
-                    command.Parameters.Add(new SQLiteParameter("id", id));
-                    command.Parameters.Add(new SQLiteParameter("nombre", user.Nombre));
+                    command.Parameters.Add(new SQLiteParameter("@id", id));
+                    command.Parameters.Add(new SQLiteParameter("@nombre", user.Nombre));
                     command.ExecuteNonQuery();   
                 } 
                 catch (Exception ex){
@@ -88,7 +88,7 @@ namespace EspacioRepositorios
                     connection.Open();
                     using SQLiteCommand command = connection.CreateCommand();
                     command.CommandText = "SELECT * FROM directors WHERE id = @idUsuario";
-                    command.Parameters.Add(new SQLiteParameter("@idusuario", idUsuario));
+                    command.Parameters.Add(new SQLiteParameter("@idUsuario", idUsuario));
                     using (SQLiteDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -116,7 +116,7 @@ namespace EspacioRepositorios
                     connection.Open();
                     using SQLiteCommand command = connection.CreateCommand();
                     command.CommandText = "DELETE FROM directors WHERE id = @id;";
-                    command.Parameters.Add(new SQLiteParameter("id", id));
+                    command.Parameters.Add(new SQLiteParameter("@id", id));
                     filasAfectadas = command.ExecuteNonQuery();
                 }
                 catch (Exception ex){
