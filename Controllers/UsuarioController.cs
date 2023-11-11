@@ -41,7 +41,7 @@ public class UsuarioController : ControllerBase
         return BadRequest();
     }
 
-    [HttpPut("api/usuario/{idUsuario}/nombre/{user}")]
+    [HttpPut("api/usuario/{idUsuario}/nombre")]
     public ActionResult<Usuario> ModificarUsuario(int idUsuario, Usuario user)
     {
         var usuario = repository.ModificarUsuario(idUsuario, user);
