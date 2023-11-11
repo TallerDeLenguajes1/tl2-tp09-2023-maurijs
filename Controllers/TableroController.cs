@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using EspacioTareas;
+using EspacioRepositorios;
 namespace tp9.Controllers;
 
 [ApiController]
@@ -7,32 +8,35 @@ namespace tp9.Controllers;
 public class TableroController : ControllerBase
 {
     private readonly ILogger<TableroController> _logger;
+    private readonly TableroRepository repository;
 
     public TableroController(ILogger<TableroController> logger)
     {
         _logger = logger;
+        repository = new TableroRepository();
     }
 
-    [HttpPost("api/tablero/{tablero}")]
+    [HttpPost("api/tablero")]
     public ActionResult<Tablero> AgregarTablero(Tablero tablero)
     {
+        var nuevo = repository.CrearTablero(tablero);
+        if (nuevo != null) return Ok(nuevo);
         return BadRequest();
     }
+
     [HttpGet("api/tablero")]
-    public ActionResult<List<Tablero>> GetTablero()
+    public ActionResult<List<Tablero>> GetTableros()
     {
+        var listaTableros = repository.GetAllTableros();
+        if (listaTableros != null) return Ok(listaTableros);
+        return BadRequest();
+    }
+
+    [HttpGet("api/tablero/{idTablero}")]
+    public ActionResult<List<Tablero>> GetTableroById(int idTablero)
+    {
+        var tablero = repository.GetTableroById(idTablero);
+        if (tablero != null) return Ok(tablero);
         return BadRequest();
     }
 }
-
-/* tarea paradigmas
-replicarG n e                                   
-| 0>= n = []                                   si 0 >= n devuelve la lista vacia
-| otherwise = e : (replicar(n-1) e)            el : concatena e con (replicar(n-1) e) que es una lista
-*/  
-
-/*
-replicarPM 0 e = []
-replicarPM n e= if 0>n then [] else e: replicarPM (null) e*/
-
-//it takes two
