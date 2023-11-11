@@ -34,7 +34,7 @@ public class TareaController : ControllerBase
         return Ok(NuevaTarea);
     }
 
-    [HttpPut("api/tarea/{idtarea}/nombre/{tarea}")]
+    [HttpPut("api/tarea/{idTarea}/nombre")]
     public ActionResult<Tarea> ModificarTarea(int idTarea, Tarea tarea)
     {
         var tareaModificada = repository.ModificarTarea(idTarea, tarea);
@@ -46,8 +46,8 @@ public class TareaController : ControllerBase
     public ActionResult<bool> EliminarTarea(int idTarea)
     {
         var resultado = repository.EliminarTarea(idTarea);
-        if (resultado > 0) return BadRequest();
-        return Ok(true);
+        if (resultado > 0) return Ok(true);
+        return BadRequest();
     }
 
     [HttpGet("api/tarea/usuario/{idUsuario}")]
